@@ -1,16 +1,11 @@
-"""
-ASGI config for livraria project.
+# OBJETIVO: Configura o ASGI
+# ASGI: Padrão moderno para comunicação entre servidores web e aplicações Python, que suporta conexões assíncronas (websockets, etc)
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+import os # Importa o módulo para interagir com o sistema operacional
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
-"""
+from django.core.asgi import get_asgi_application # Importa a função que cria o objeto ASGI da aplicação Django
 
-import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'livraria.settings') # Define a variável de ambiente para apontar para as configurações do projeto
 
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'livraria.settings')
-
-application = get_asgi_application()
+application = get_asgi_application() # Cria a aplicação ASGI que o servidor vai usar para processar requisições
+                                     # Essa variável `application` é o ponto de entrada do servidor para o Django no padrão ASGI

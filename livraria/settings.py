@@ -1,27 +1,29 @@
-from pathlib import Path
+# OBJETIVO: Configura todas as definições essenciais para o funcionamento do projeto Django: caminhos, segurança, apps usados, banco, templates, internacionalização e mais.
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+from pathlib import Path #Importa a classe Path para lidar com caminhos de arquivos de forma fácil e segura
 
-SECRET_KEY = 'django-insecure-ax+n8^oybr7f22ld$l!=fp)n3o!c@^^(dx7(d9elle$50tihyi'
+BASE_DIR = Path(__file__).resolve().parent.parent # Define o caminho base do projeto (duas pastas acima deste arquivo) // Usado para referenciar arquivos e diretórios do projeto
 
-DEBUG = True
+SECRET_KEY = 'django-insecure-ax+n8^oybr7f22ld$l!=fp)n3o!c@^^(dx7(d9elle$50tihyi' # Chave secreta do Django, usada para segurança (ex: assinaturas, criptografia) // Nunca deve ser compartilhada publicamente em projetos reais
 
-ALLOWED_HOSTS = []
+DEBUG = True # Ativa o modo debug, que mostra erros detalhados e recarrega o servidor automaticamente // Só deve estar True em desenvolvimento, nunca em produção
+
+ALLOWED_HOSTS = [] # Lista de domínios que o Django aceita receber requisições // Vazio significa que aceita só localhost / ambiente de desenvolvimento
 
 
-# Application definition
-
+# Lista dos aplicativos que o Django deve carregar nesse projeto
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'api',
-    'rest_framework',
+    'django.contrib.admin', # Painel Administrativo
+    'django.contrib.auth', # Sistema de autenticação
+    'django.contrib.contenttypes', # Suporte a tipos de conteúdos genéricos
+    'django.contrib.sessions', # Suporte a sessões (login, cookies)
+    'django.contrib.messages', # Sistema de mensagens
+    'django.contrib.staticfiles', # Serve arquivos estáticos (CSS, JS)
+    'api', # app 'api'
+    'rest_framework', # Django REST Framework (API)
 ]
 
+# Lista de middlewares, que processam requisições e respostas
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -32,8 +34,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'livraria.urls'
+ROOT_URLCONF = 'livraria.urls' # Define o arquivo principal de rotas do projeto
 
+# Configuração para usar templates HTML no Django // Aqui sem pastas extras de templates, só o padrão dos apps
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -49,12 +52,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'livraria.wsgi.application'
+WSGI_APPLICATION = 'livraria.wsgi.application' # Aponta para o arquivo que cria a aplicação WSGI (ponto de entrada do servidor)
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Configura o banco de dados padrão como SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -66,6 +70,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
+# Validações para senhas (evitar senhas fracas ou comuns)
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -85,21 +90,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us' # Idioma padrão do projeto
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC' # Fuso horário padrão do projeto
 
-USE_I18N = True
+USE_I18N = True # Habilita tradução e localização
 
-USE_TZ = True
+USE_TZ = True # Ativa uso de fusos horários para datas e horas
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/' # URL base para servir arquivos estáticos (CSS, JS, imagens)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Define o tipo padrão de campo para IDs nas tabelas como inteiro grande
