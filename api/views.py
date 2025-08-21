@@ -2,8 +2,8 @@
 
 from django.shortcuts import render # Importa função para renderizar templates HTML
 from rest_framework.generics import ListCreateAPIView # Importa a view genérica que já implementa: GET (lista) e POST (criar)
-from .models import Autor # Importa o modelo Autor criado
-from .serializers import AutorSerializers # Importa o serializador que converte o Autor em dados JSON e valida dados de entrada
+from .models import Autor, Livro, Editora # Importa os modelos Autor, Livro e Editora criados
+from .serializers import AutorSerializers, EditoraSerializers, LivroSerializers # Importa o serializador que converte o Autor em dados JSON e valida dados de entrada
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -30,3 +30,11 @@ def visualizacao_autor(request):
 # Serializar: Transforma os dados do banco de dados (objetos) em JSON para enviar na resposta da API
 # Desserializar: Receber e validar dados pelo usuário em JSON e converter para objetos Python prontos para salvar no banco
 # Decorator: Função que recebe outra função como argumento e estende ou modifica seu comportamento sem alterar diretamente o código da função original
+
+class EditorasView(ListCreateAPIView):
+    queryset = Editora.objects.all()
+    serializer_class = EditoraSerializers
+
+class LivrosView(ListCreateAPIView):
+    queryset = Livro.objects.all()
+    serializer_class = LivroSerializers
