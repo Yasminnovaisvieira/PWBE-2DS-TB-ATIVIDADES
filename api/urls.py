@@ -11,12 +11,12 @@ urlpatterns = [
     # '.as_view()' = Transforma a classe em uma função que o Django consegue usar
     path('authors', visualizacao_autor),
     path('editoras', EditorasView.as_view()),
-    path('livros', LivrosView.as_view())
+    path('livros', LivrosView.as_view()),
 
     # UPDATE / DELETE (NÃO DEU CERTO)
-    # path('autor/<int:pk>', AutoresDetailView.as_view())
-    # path('editora/<int:pk>', EditorasDetailView.as_view())
-    # path('livro/<int:pk>', LivrosDetailView.as_view())
+    path('autor/<int:pk>', AutoresDetailView.as_view()),
+    path('editora/<int:pk>', EditorasDetailView.as_view()),
+    path('livro/<int:pk>', LivrosDetailView.as_view())
 ]
 
 # IMPORTANTE: Normalmente se adiciona uma barra no final ('autores/') para seguir o padrão REST do Django
