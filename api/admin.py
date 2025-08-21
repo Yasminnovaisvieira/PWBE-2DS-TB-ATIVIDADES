@@ -4,3 +4,5 @@ from django.contrib import admin # Importa as ferramentas do Django para gerenci
 from .models import * # Importa todos os modelos do arquivo models.py da mesma pasta (Autor)
 
 admin.site.register(Autor) # Registra o modelo Autor no painel admin do Django // Isso permite criar, editar, listar e excluir autores direto pelo admin
+admin.site.register(Editora)
+admin.site.register(Livro)

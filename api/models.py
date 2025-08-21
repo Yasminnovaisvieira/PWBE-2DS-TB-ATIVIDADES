@@ -24,6 +24,9 @@ class Editora(models.Model):
     email = models.EmailField(null=True, blank=True) # EmailField = Regras de E-mail
     site = models.URLField(null=True, blank=True) # URLField = 
 
+    def __str__(self):
+        return f"{self.editora}"
+
 # blank = True : Não é preciso preencher o campo.
 # null = True : Aí se eu deixar vazio, o valor será NULL
 
@@ -35,7 +38,7 @@ class Livro(models.Model):
     isbn = models.CharField(max_length=255)
     descricao = models.TextField()
     idioma = models.CharField(max_length=255, default="Português")
-    ano_publicado = models.IntegerField()
+    ano_publicado = models.DateField()
     paginas = models.IntegerField()
     preco = models.DecimalField(max_digits=10,decimal_places=2)
     estoque = models.IntegerField()
@@ -43,3 +46,6 @@ class Livro(models.Model):
     disponivel =models.BooleanField(default=True)
     dimensoes = models.CharField(max_length=255)
     peso = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Título: {self.titulo} \n | Autor: {self.autor} \n | Ano: {self.ano_publicado}"
