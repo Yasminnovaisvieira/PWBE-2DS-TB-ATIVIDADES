@@ -1,7 +1,7 @@
 # OBJETIVO: Expor uma endpoint da API que permite listar todos os autores (GET) e criar um autor novo (POST).
 
 from django.shortcuts import render # Importa função para renderizar templates HTML
-from rest_framework.generics import ListCreateAPIView # Importa a view genérica que já implementa: GET (lista) e POST (criar)
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView # Importa a view genérica que já implementa: GET (lista) e POST (criar)
 from .models import Autor, Livro, Editora # Importa os modelos Autor, Livro e Editora criados
 from .serializers import AutorSerializers, EditoraSerializers, LivroSerializers # Importa o serializador que converte o Autor em dados JSON e valida dados de entrada
 from rest_framework.decorators import api_view
@@ -12,6 +12,10 @@ from rest_framework import status
 class AutoresView(ListCreateAPIView):
     queryset = Autor.objects.all() # Define a fonte de dados (Todos os registros do modelo Autor)
     serializer_class = AutorSerializers # Define o serializador usado para serializar (saída) e desserializar/validar (entrada)
+
+class AutoresDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Autor.objects.all()
+    serializer_class = AutorSerializers
 
 @api_view(['GET', 'POST'])
 def visualizacao_autor(request):
@@ -35,6 +39,15 @@ class EditorasView(ListCreateAPIView):
     queryset = Editora.objects.all()
     serializer_class = EditoraSerializers
 
+class EditorasDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Editora.objects.all()
+    serializer_class = EditoraSerializers
+
+
 class LivrosView(ListCreateAPIView):
+    queryset = Livro.objects.all()
+    serializer_class = LivroSerializers
+
+class LivrosDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Livro.objects.all()
     serializer_class = LivroSerializers
