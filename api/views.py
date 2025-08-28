@@ -4,9 +4,11 @@ from django.shortcuts import render # Importa função para renderizar templates
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView # Importa a view genérica que já implementa: GET (lista) e POST (criar)
 from .models import Autor, Livro, Editora # Importa os modelos Autor, Livro e Editora criados
 from .serializers import AutorSerializers, EditoraSerializers, LivroSerializers # Importa o serializador que converte o Autor em dados JSON e valida dados de entrada
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+
+from rest_framework.permissions import IsAuthenticated
 
 # Cria uam view baseada em classe que permite listar e criar autores via API
 class AutoresView(ListCreateAPIView):
@@ -18,6 +20,7 @@ class AutoresDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = AutorSerializers
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def visualizacao_autor(request):
     if request.method == 'GET':
         queryset = Autor.objects.all()

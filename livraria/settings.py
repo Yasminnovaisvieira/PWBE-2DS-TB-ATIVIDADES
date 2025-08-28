@@ -1,6 +1,7 @@
 # OBJETIVO: Configura todas as definições essenciais para o funcionamento do projeto Django: caminhos, segurança, apps usados, banco, templates, internacionalização e mais.
 
 from pathlib import Path #Importa a classe Path para lidar com caminhos de arquivos de forma fácil e segura
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent # Define o caminho base do projeto (duas pastas acima deste arquivo) // Usado para referenciar arquivos e diretórios do projeto
 
@@ -22,6 +23,17 @@ INSTALLED_APPS = [
     'api', # app 'api'
     'rest_framework', # Django REST Framework (API)
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+ 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 # Lista de middlewares, que processam requisições e respostas
 MIDDLEWARE = [

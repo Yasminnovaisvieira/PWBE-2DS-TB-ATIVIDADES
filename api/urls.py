@@ -3,6 +3,10 @@
 from django.urls import path # Importa a função 'path' para definir rotas da aplicação
 from .views import * # Importa todo o conteúdo do arquivo 'views.py' // Puxa o 'AutoresView'
 from .views import visualizacao_autor, EditorasView, LivrosView, AutoresDetailView, EditorasDetailView, LivrosDetailView  # Ou colocar * para importar tudo
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 # Lista as rotas de aplicação
 urlpatterns = [
@@ -21,4 +25,7 @@ urlpatterns = [
 
 # IMPORTANTE: Normalmente se adiciona uma barra no final ('autores/') para seguir o padrão REST do Django
 # REST: Estilo de arquitetura para criar APIs que seguem algumas regras e padrões para comunicação entre cliente e servidor
+
+path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
