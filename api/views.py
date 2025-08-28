@@ -14,10 +14,12 @@ from rest_framework.permissions import IsAuthenticated
 class AutoresView(ListCreateAPIView):
     queryset = Autor.objects.all() # Define a fonte de dados (Todos os registros do modelo Autor)
     serializer_class = AutorSerializers # Define o serializador usado para serializar (saída) e desserializar/validar (entrada)
+    permission_classes = [IsAuthenticated]
 
 class AutoresDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializers
+    permission_classes = [IsAuthenticated]
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -41,16 +43,20 @@ def visualizacao_autor(request):
 class EditorasView(ListCreateAPIView):
     queryset = Editora.objects.all()
     serializer_class = EditoraSerializers
+    permission_classes = [IsAuthenticated]
 
 class EditorasDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Editora.objects.all()
     serializer_class = EditoraSerializers
+    permission_classes = [IsAuthenticated]
 
 
 class LivrosView(ListCreateAPIView):
     queryset = Livro.objects.all()
     serializer_class = LivroSerializers
+    permission_classes = [IsAuthenticated]
 
 class LivrosDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Livro.objects.all()
     serializer_class = LivroSerializers
+    permission_classes = [IsAuthenticated]
