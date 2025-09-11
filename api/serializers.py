@@ -1,23 +1,20 @@
-# OBJETIVO: Definir como os dados do modelo (Autor, nesse caso) serão convertidos para JSON quando enviados na resposta da API e como o JSON recebido será convertido/validado antes de virae um objeto (Autor) salvo no banco de dados
+from rest_framework import serializers  #Transforma a tabela em JSON
+from .models import Autor, Editora, Livro
 
-from rest_framework import serializers # Importa o módulo de serializadores do Django REST Framework
-                                       # Ele fornece classes e funções para converter dados Python para JSON (vice-versa também) e validar dados
-from .models import Autor, Livro, Editora # Improta o modelo Autor, que representa a tabela no banco e os campos dela
-
-# Cria uma classe de serialzação baseada no ModelSerializer
-# ModelSerializer: Cria os campos automaticamente a partir de um modelo Django
-class AutorSerializers(serializers.ModelSerializer):
-    # Configurações do serializador
+#Serializer utilizado para gerar o dicionário JSON
+class AutorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Autor # Diz qual modelo do Django será usado como base (Autor)
-        fields = '__all__' # Indica que todos os campos do modelo devem ser incluídos no serializador
+        model = Autor
+        fields = '__all__' #Pega todos os campos torna JSON, para o Python entender
 
-class EditoraSerializers(serializers.ModelSerializer):
+#Serializer utilizado para gerar o dicionário JSON da Editoria
+class EditoraSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Editora # Diz qual modelo do Django será usado como base (Autor)
-        fields = '__all__' # Indica que todos os campos do modelo devem ser incluídos no serializador
+        model = Editora
+        fields = '__all__'  
 
-class LivroSerializers(serializers.ModelSerializer):
+#Serializer utilizado para gerar o dicionário JSON da Livro
+class LivroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Livro # Diz qual modelo do Django será usado como base (Autor)
-        fields = '__all__' # Indica que todos os campos do modelo devem ser incluídos no serializador
+        model = Livro
+        fields = '__all__'

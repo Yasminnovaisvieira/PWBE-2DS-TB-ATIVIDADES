@@ -1,62 +1,180 @@
-# OBJETIVO: Expor uma endpoint da API que permite listar todos os autores (GET) e criar um autor novo (POST).
+from django.shortcuts import render #Renderiza
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from django.shortcuts import render # Importa função para renderizar templates HTML
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView # Importa a view genérica que já implementa: GET (lista) e POST (criar)
-from .models import Autor, Livro, Editora # Importa os modelos Autor, Livro e Editora criados
-from .serializers import AutorSerializers, EditoraSerializers, LivroSerializers # Importa o serializador que converte o Autor em dados JSON e valida dados de entrada
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+
+#Importação do Serializer e Autor
+from .models import Autor, Editora, Livro
+from .serializers import AutorSerializer, EditoraSerializer,LivroSerializer
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated
-
-# Cria uam view baseada em classe que permite listar e criar autores via API
+#Serve como um post, e o list como get
 class AutoresView(ListCreateAPIView):
-    queryset = Autor.objects.all() # Define a fonte de dados (Todos os registros do modelo Autor)
-    serializer_class = AutorSerializers # Define o serializador usado para serializar (saída) e desserializar/validar (entrada)
+    #query é um tipo de busca
+    #set envia
+    queryset = Autor.objects.all() #Aquilo que o usuário verá, no caso todos os objetos dentro da classe Autor
+    serializer_class = AutorSerializer
     permission_classes = [IsAuthenticated]
-
-class AutoresDetailView(RetrieveUpdateDestroyAPIView):
+class AutoresCrud(RetrieveUpdateDestroyAPIView): #Realize o método do CRUD dentro da API 
     queryset = Autor.objects.all()
-    serializer_class = AutorSerializers
+    serializer_class = AutorSerializer #Quando buscados vem em forma de JSON
     permission_classes = [IsAuthenticated]
+    filters_backend = [DjangoFilterBackend, SearchFilter]
+    filterset_fiel = ['id']
+    search_fields = ['nome']
+ 
 
+#Método do CRUD dos autores
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def visualizacao_autor(request):
     if request.method == 'GET':
         queryset = Autor.objects.all()
-        serializer = AutorSerializers(queryset, many = True)
+        serializer = AutorSerializer(queryset, many = True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = AutorSerializers(data = request.data)
-        if serializer.save():
+        serializer = AutorSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        
 
-# IMPORTANTE: O serializador é quem traduz objetos Python/Django em formato de dados usados na API (normalmente JSON)
-# Serializar: Transforma os dados do banco de dados (objetos) em JSON para enviar na resposta da API
-# Desserializar: Receber e validar dados pelo usuário em JSON e converter para objetos Python prontos para salvar no banco
-# Decorator: Função que recebe outra função como argumento e estende ou modifica seu comportamento sem alterar diretamente o código da função original
+#Método para GET, PUT e DELETE       
+@api_view(['GET', 'PUT', 'DELETE'])
+def detalhes_autores(request,pk):
+ 
+    autor = Autor.objects.get(pk=pk)
+   
+    if request.method == 'GET':
+        serializer = AutorSerializer(autor)
+        return Response(serializer.data)
+   
+    elif request.method == 'PUT':
+        serializer = AutorSerializer(autor, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+       
+    elif request.method == 'DELETE':
+        autor.delete()
+        if serializer.is_valid():
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        
 
-class EditorasView(ListCreateAPIView):
+
+
+
+class EditoraView(ListCreateAPIView):
     queryset = Editora.objects.all()
-    serializer_class = EditoraSerializers
+    serializer_class = EditoraSerializer #Quando buscados vem em forma de JSON
     permission_classes = [IsAuthenticated]
-
-class EditorasDetailView(RetrieveUpdateDestroyAPIView):
+class EditoraCrud(RetrieveUpdateDestroyAPIView):
     queryset = Editora.objects.all()
-    serializer_class = EditoraSerializers
+    serializer_class = EditoraSerializer
     permission_classes = [IsAuthenticated]
 
+#Método do CRUD dos editora
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def visualizar_editora(request):
+    if request.method == 'GET':
+        queryset = Editora.objects.all()
+        serializer = EditoraSerializer(queryset, many = True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = EditoraSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+       
 
-class LivrosView(ListCreateAPIView):
+#Método para GET, PUT e DELETE
+@api_view(['GET', 'PUT', 'DELETE'])
+def detalhes_editoras(request,pk):
+ 
+    editora = Editora.objects.get(pk=pk)
+   
+    if request.method == 'GET':
+        serializer = EditoraSerializer(editora)
+        return Response(serializer.data)
+   
+    elif request.method == 'PUT':
+        serializer = EditoraSerializer(editora, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+       
+    elif request.method == 'DELETE':
+        editora.delete()
+        if serializer.is_valid():
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+
+class LivroView(ListCreateAPIView):
     queryset = Livro.objects.all()
-    serializer_class = LivroSerializers
+    serializer_class = LivroSerializer #Quando buscados vem em forma de JSON
     permission_classes = [IsAuthenticated]
 
-class LivrosDetailView(RetrieveUpdateDestroyAPIView):
+class LivroCrud(RetrieveUpdateDestroyAPIView):
     queryset = Livro.objects.all()
-    serializer_class = LivroSerializers
+    serializer_class = LivroSerializer
     permission_classes = [IsAuthenticated]
+
+#Método do CRUD dos autores
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def visualizacao_livro(request):
+    if request.method == 'GET':
+        queryset = Livro.objects.all()
+        serializer = LivroSerializer(queryset, many = True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = LivroSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+       
+#Método para GET, PUT e DELETE
+@api_view(['GET', 'PUT', 'DELETE'])
+def detalhes_livros(request,pk):
+ 
+    livro = Livro.objects.get(pk=pk)
+   
+    if request.method == 'GET':
+        serializer = LivroSerializer(livro)
+        return Response(serializer.data)
+   
+    elif request.method == 'PUT':
+        serializer = LivroSerializer(livro, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+       
+    elif request.method == 'DELETE':
+        livro.delete()
+        if serializer.is_valid():
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
