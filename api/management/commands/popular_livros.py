@@ -1,52 +1,51 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from api.models import Livro
-
+from api.models import Editora, Autor, Livro
+ 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument("--arquivo", default="population/livros.csv")
+        parser.add_argument("--arquivo_livros", default="population/livros.csv")
+        parser.add_argument("--arquivo_editoras", action="population/editoras.csv")
+        parser.add_argument("--arquivo_autores", action="population/autores.csv")
+ 
         parser.add_argument("--truncate", action="store_true")
         parser.add_argument("--update", action="store_true")
-
+ 
     @transaction.atomic
-    def handle(self, *args, **options):
-        df = pd.read_csv(options["arquivo"], encoding="utf-8-sig")
-        df.columns = [c.strip().lower().lstrip("\ufeff") for c in df.columns]
-
-        if options["truncate"]:
+    def handle(self, *a, **o):
+ 
+        #Leitura dos códigos do arquivo colocados lá em cima
+       
+        df_autores= pd.read_csv(o["arquivo_autores"], encoding="utf-8-sig")
+        df_editoras= pd.read_csv(o["arquivo_editoras"], encoding="utf-8-sig")
+        df_livros= pd.read_csv(o["arquivo_livros"], encoding="utf-8-sig")
+ 
+        df_autores.columns = [c.strip().lower().lstrip("\ufeff") for c in df_autores.columns]
+        df_editoras.columns = [c.strip().lower().lstrip("\ufeff") for c in df_editoras.columns]
+        df_livros.columns = [c.strip().lower().lstrip("\ufeff") for c in df_livros.columns]
+ 
+        if o["truncate"]:
             Livro.objects.all().delete()
-
-        df["titulo"] = df["titulo"].astype(str).str.strip()
-        df["subtitulo"] = df["subtitulo"].astype(str).str.strip()
-        df["isbn"] = df["isbn"].apply(lambda x: str(x).zfill(13) if pd.notna(x) else None)
-        df["descricao"] = df["descricao"].astype(str).str.strip()
-        df["idioma"] = df["idioma"].astype(str).str.strip()
-        df["ano_publicado"] = pd.to_numeric(df["ano_publicado"], errors="coerce")
-        df["preco"] = pd.to_numeric(df["preco"], errors="coerce").fillna(0.0)
-        df["estoque"] = pd.to_numeric(df["estoque"], errors="coerce").fillna(0).astype(int)
-        df["desconto"] = pd.to_numeric(df["desconto"], errors="coerce").fillna(0.0)
-        df["disponivel"] = df["disponivel"].apply(lambda x: bool(x) if pd.notna(x) else False)
-        df["dimensoes"] = pd.to_numeric(df["dimensoes"], errors="coerce").fillna(0.0)
-        df["peso"] = pd.to_numeric(df["peso"], errors="coerce").fillna(0.0)
-
-        if options["update"]:
+ 
+        df["editora"] = df["editora"].astype(str).str.strip()
+        df["cnpj"] = df["cnpj"].astype(str).str.strip()
+        df["endereco"] = df["endereco"].astype(str).str.strip()
+        df["telefone"] = df["telefone"].astype(str).str.strip()
+        df["email"] = df["email"].astype(str).str.strip()  # Corrected: Read from the 'email' column
+        df["site"] = df["site"].astype(str).str.strip()
+ 
+        if o["update"]:
             criados = atualizados = 0
             for r in df.itertuples(index=False):
                 _, created = Livro.objects.update_or_create(
-                    isbn=r.isbn,
+                    cnpj=r.cnpj,  # Using a unique field like cnpj for lookup
                     defaults={
-                        "titulo": r.titulo,
-                        "subtitulo": r.subtitulo,
-                        "descricao": r.descricao,
-                        "idioma": r.idioma,
-                        "ano_publicado": r.ano_publicado,
-                        "preco": r.preco,
-                        "estoque": r.estoque,
-                        "desconto": r.desconto,
-                        "disponivel": r.disponivel,
-                        "dimensoes": r.dimensoes,
-                        "peso": r.peso,
+                        "editora": r.editora,
+                        "endereco": r.endereco,
+                        "telefone": r.telefone,
+                        "email": r.email,
+                        "site": r.site, # Corrected: 'r.ite' to 'r.site'
                     }
                 )
                 criados += int(created)
@@ -55,19 +54,14 @@ class Command(BaseCommand):
         else:
             objs = [
                 Livro(
-                    titulo=r.titulo,
-                    subtitulo=r.subtitulo,
-                    isbn=r.isbn,
-                    descricao=r.descricao,
-                    idioma=r.idioma,
-                    ano_publicado=r.ano_publicado,
-                    preco=r.preco,
-                    estoque=r.estoque,
-                    desconto=r.desconto,
-                    disponivel=r.disponivel,
-                    dimensoes=r.dimensoes,
-                    peso=r.peso
+                    editora=r.editora,
+                    cnpj=r.cnpj,
+                    endereco=r.endereco,
+                    telefone=r.telefone,
+                    email=r.email,
+                    site=r.site,
                 )
                 for r in df.itertuples(index=False)
             ]
-            Livro.objects.bulk_create(objs)
+            Livro.objects.bulk_create(objs, ignore_conflicts=True)
+            self.stdout.write(self.style.SUCCESS(f"Criados: {len(objs)} editoras"))
