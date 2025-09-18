@@ -3,12 +3,11 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-m@c+^482(0-^ian_ylm4mpf%zkxib)(hcv+3%-o-90!5bkupr0'
+SECRET_KEY = 'django-insecure-*(-8o#=8l4l0*c@zf@-$aa68o6h&folrzkyaj-i#0q30fg@f)c'
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,7 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
-    'drf_yasg'
+    'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 REST_FRAMEWORK = {
@@ -29,10 +29,9 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

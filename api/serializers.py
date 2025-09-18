@@ -1,20 +1,17 @@
-from rest_framework import serializers  #Transforma a tabela em JSON
+from rest_framework import serializers
 from .models import Autor, Editora, Livro
 
-#Serializer utilizado para gerar o dicionário JSON
-class AutorSerializer(serializers.ModelSerializer):
+class AutorSerializers(serializers.ModelSerializer):
     class Meta:
         model = Autor
-        fields = '__all__' #Pega todos os campos torna JSON, para o Python entender
+        fields = '__all__'
 
-#Serializer utilizado para gerar o dicionário JSON da Editoria
-class EditoraSerializer(serializers.ModelSerializer):
+class EditoraSerializers(serializers.ModelSerializer):
     class Meta:
         model = Editora
-        fields = '__all__'  
+        fields = '__all__'
 
-#Serializer utilizado para gerar o dicionário JSON da Livro
-class LivroSerializer(serializers.ModelSerializer):
+class LivroSerializers(serializers.ModelSerializer):
     class Meta:
         model = Livro
         fields = '__all__'
