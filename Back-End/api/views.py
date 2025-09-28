@@ -10,7 +10,7 @@ from rest_framework.filters import SearchFilter
 
 # ==== View Autores ==== #
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def listar_autores(request):
     if request.method == 'GET':
         filter_backends = [DjangoFilterBackend, SearchFilter]
