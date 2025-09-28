@@ -67,7 +67,7 @@ def detalhes_autores(request,pk):
 
 # ==== View Editoras ==== #
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def listar_editoras(request):
     if request.method == 'GET':
         filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -91,7 +91,7 @@ listar_editoras.filterset_fields = ['cnpj', 'telefone']
 listar_editoras.search_fields = ['editora', 'site']
 
 @api_view(['GET', 'PUT', 'DELETE', 'PATCH'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def detalhes_editoras(request,pk):
 
     editora = Editora.objects.get(pk=pk)
@@ -123,25 +123,24 @@ def detalhes_editoras(request,pk):
 
 # ==== View Livros ==== #
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def listar_livros(request):
     if request.method == 'GET':
         filter_backends = [DjangoFilterBackend, SearchFilter]
-        queryset = Autor.objects.all()
+        queryset = Livro.objects.all()
 
         for backend in list(filter_backends):
             queryset = backend().filter_queryset(request, queryset, view=listar_livros)
 
-
-        serializer = LivroSerializers(queryset, many = True)
+        serializer = LivroSerializers(queryset, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = LivroSerializers(data = request.data)
+        serializer = LivroSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 listar_livros.filter_backends = [DjangoFilterBackend, SearchFilter]
 listar_livros.filterset_fields = ['titulo', 'subtitulo']
